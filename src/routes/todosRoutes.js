@@ -6,10 +6,11 @@ const {
   updateTodo,
   deleteTodo,
 } = require('../controllers/todosController');
+const { privateRoute } = require('../middleware/authMiddleware');
 
-todosRouter.get('/', getTodos);
-todosRouter.post('/', createTodo);
-todosRouter.patch('/:id', updateTodo);
-todosRouter.delete('/:id', deleteTodo);
+todosRouter.get('/', privateRoute, getTodos);
+todosRouter.post('/', privateRoute, createTodo);
+todosRouter.patch('/:id', privateRoute, updateTodo);
+todosRouter.delete('/:id', privateRoute, deleteTodo);
 
 module.exports = todosRouter;
