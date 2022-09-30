@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 require('dotenv').config();
 // Routes
 const todosRouter = require('./routes/todosRoutes');
@@ -23,10 +24,9 @@ if (cluster.isMaster) {
     cluster.fork();
   });
 } else {
-  const app = express();
   const PORT = process.env.PORT || 3005;
-
-  //CHECK WHAT THIS DOES EXACTLY
+  const app = express();
+  app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
 
