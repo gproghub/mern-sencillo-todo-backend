@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const userModel = require('../models/usersModel');
 const bcrypt = require('bcryptjs');
+const { generateToken } = require('../utils/generateToken');
 
 //@desc   Register user
 //@route  POST /api/v1/users/register
@@ -31,7 +32,12 @@ const registerUser = asyncHandler(async (req, res) => {
   });
 
   //Send user data in the response
-  res.status(200).json({ newUser }); //CHECK LATER TO SEE WHAT'S NEEDED
+  res.status(200).json({
+    _id: newUser._id,
+    name: newUser.name,
+    email: newUser.email,
+    token: generateToken(newUser._id),
+  });
 });
 
 //@desc   Login user
@@ -47,16 +53,23 @@ const loginUser = asyncHandler(async (req, res) => {
   const registeredUser = await userModel.findOne({ email });
   if (registeredUser) {
     //Check password
-    const doesPasswordMatch = await bcrypt.compare(password, registeredUser.password);
+    const doesPasswordMatch = await bcrypt.compare(
+      password,
+      registeredUser.password
+    );
     if (doesPasswordMatch) {
-      res.status(200).json({ registeredUser }); //CHECK LATER TO SEE WHAT'S NEEDED
+      res.status(200).json({
+        _id: registeredUser._id,
+        name: registeredUser.name,
+        email: registeredUser.email,
+        token: generateToken(registeredUser._id),
+      });
     } else {
       res.status(400).json({ message: 'Password does not match' });
     }
   } else {
     res.status(400).json('User does not exist, please register.');
   }
-
 });
 
 module.exports = { registerUser, loginUser };
