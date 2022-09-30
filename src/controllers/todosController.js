@@ -1,11 +1,17 @@
 const asyncHandler = require('express-async-handler');
 const todoModel = require('../models/todoModel');
-const userModel = require('../models/usersModel');
 
 //@desc   Get to-dos
 //@route  GET /api/v1/todos
 //@access Private
 const getTodos = asyncHandler(async (req, res) => {
+  // This code is to test performance on different threads (see server.js)
+  // let n = 5000000000;
+  // let count = 0;
+  // for (let i = 0; i <= n; i++) {
+  //   count += i;
+  // }
+
   //asyncHandler is a built-in replacement for try-catch blocks
   const todos = await todoModel.find({ user: req.user.id });
   res.status(200).json({ todos });
