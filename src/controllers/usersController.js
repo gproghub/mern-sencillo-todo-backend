@@ -24,21 +24,39 @@ const registerUser = asyncHandler(async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, salt);
 
   //Create user
-  const registeredUser = await userModel.create({
+  const newUser = await userModel.create({
     name,
     email,
     password: hashedPassword,
   });
 
   //Send user data in the response
-  res.status(200).json({ registeredUser });
+  res.status(200).json({ newUser }); //CHECK LATER TO SEE WHAT'S NEEDED
 });
 
 //@desc   Login user
 //@route  POST /api/v1/users/login
 //@access Public
 const loginUser = asyncHandler(async (req, res) => {
-  res.status(200).send({ message: 'Login user' });
+  const { email, password } = req.body;
+  if (!email || !password) {
+    res.status(400).json({ message: 'Please provide email and password' });
+  }
+
+  //Check user
+  const registeredUser = await userModel.findOne({ email });
+  if (registeredUser) {
+    //Check password
+    const doesPasswordMatch = await bcrypt.compare(password, registeredUser.password);
+    if (doesPasswordMatch) {
+      res.status(200).json({ registeredUser }); //CHECK LATER TO SEE WHAT'S NEEDED
+    } else {
+      res.status(400).json({ message: 'Password does not match' });
+    }
+  } else {
+    res.status(400).json('User does not exist, please register.');
+  }
+
 });
 
 module.exports = { registerUser, loginUser };
