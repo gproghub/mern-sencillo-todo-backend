@@ -14,7 +14,7 @@ const getTodos = asyncHandler(async (req, res) => {
 
   //asyncHandler is a built-in replacement for try-catch blocks
   const todos = await todoModel.find({ user: req.user.id });
-  res.status(200).json({ todos });
+  res.status(200).json(todos);
 });
 
 //@desc   Create to-do
@@ -26,11 +26,11 @@ const createTodo = asyncHandler(async (req, res) => {
     res.status(400).json({ message: 'Please add text' });
   }
   const newTodo = await todoModel.create({
-    user: req.user,
+    user: req.user.id,
     text: req.body.text,
   });
 
-  res.status(200).json({ newTodo });
+  res.status(200).json(newTodo);
 });
 
 //@desc   Update to-do
@@ -58,7 +58,7 @@ const updateTodo = asyncHandler(async (req, res) => {
     req.body,
     { new: true }
   );
-  res.status(200).json({ updatedTodo });
+  res.status(200).json(updatedTodo);
 });
 
 //@desc   Delete to-do
@@ -81,7 +81,7 @@ const deleteTodo = asyncHandler(async (req, res) => {
   }
 
   const deletedTodo = await todoModel.findByIdAndDelete(req.params.id);
-  res.status(200).json({ msg: 'To-do deleted', deletedTodo });
+  res.status(200).json(deletedTodo);
 });
 
 module.exports = {

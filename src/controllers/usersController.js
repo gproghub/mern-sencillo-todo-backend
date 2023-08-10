@@ -16,8 +16,7 @@ const registerUser = asyncHandler(async (req, res) => {
   //Check if email already exists (by email)
   const userExists = await userModel.findOne({ email });
   if (userExists) {
-    res.status(400);
-    throw new Error('User already exists.');
+    res.status(400).json({ message: 'User already exists' });
   }
 
   //Hash the password before creating a user
@@ -68,7 +67,7 @@ const loginUser = asyncHandler(async (req, res) => {
       res.status(400).json({ message: 'Password does not match' });
     }
   } else {
-    res.status(400).json('User does not exist, please register.');
+    res.status(400).json({ message: 'User does not exist, please register.' });
   }
 });
 
